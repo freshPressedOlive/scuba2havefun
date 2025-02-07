@@ -1,0 +1,106 @@
+<html>
+<head>
+	<title>Inner Depths of Leinecker's Mind (Contact Manager)</title>
+	<script type="text/javascript" src="js/code.js"></script>
+    <link href="css/styles.css" rel="stylesheet">	
+    <link href="https://fonts.googleapis.com/css?family=Ubuntu" rel="stylesheet">
+	
+	<script type="text/javascript">
+	document.addEventListener('DOMContentLoaded', function() 
+	{
+		readCookie();
+	}, false);
+	</script>
+	
+</head>
+<body>
+
+	<!-- <h1 id="title">Inner Depths of Leinecker's Mind (Contact Manager)</h1> -->
+
+<div id="loggedInDiv">
+	<span id="userName"></span>
+	<button type="button" id="logoutButton" class="logoutButtons" onclick="doLogout();"> Log Out </button>
+	<p id="hiiiiii">
+</div>
+
+<div id="accessUIDiv">
+
+	<button type="button" id="updateButton" class="updateButton" onclick="refreshContacts();"> </button>
+	<button type="button" id="addButton" class="addButton" onclick="switchToAddContact();"> </button>
+	<input type="text" id="searchText" placeholder="Contact To Search For"/>
+	<button type="button" id="searchButton" class="searchButton" onclick="searchContacts();"> </button>
+
+	<!-- <button type="button" id="searchButton" class="buttons" onclick="searchContacts();"> Search Contact </button><br /> -->
+	<!--New button for refreshing list-->
+
+	<span id="contactSearchResult"></span>
+	<!--<p id="colorList">
+	</p><br /><br /> -->
+
+	<!-- <input type="text" id="colorText" placeholder="Contact To Add"> -->
+	<!-- <button type="button" id="addButton" class="buttons" onclick="newContactWindow();"> Add Contact </button><br /> -->
+	<!-- <span id="colorAddResult"></span> -->
+</div>
+
+<div id="contactList">
+	<!-- <p>First Name | Last Name | Email | Phone | Edit | Delete</p> -->
+	<!--will return FirstName LastName, Email, Phone, and have edit and delete icon-->
+	<table id="contactTable">	
+	<tr>
+		<th> First Name </th>
+		<th> Last Name </th>
+		<th> Email </th>
+		<th> Phone </th>
+		<th> Edit </th>
+		<th> Delete </th>
+	</tr>
+	<tr>
+		<td> Princess </td>
+		<td> Peach </td>
+		<td> peach@hotmail.com </td>
+		<td>4071234567</td>
+		<td><button type="button" id="editButton" class="editButton" onclick="edit();"> </button></td>
+		<td><button type="button" id="areYouSure" class="deleteButton" onclick="areYouSure();"> </button></td>
+	</tr>
+	<tr>
+		<td> File </td>
+		<td> Zilla </td>
+		<td>zilla@ucf.edu</td>
+		<td>1234567899</td>
+	</tr>
+	</table>
+
+
+	<!--return HTML table, configure through JS-->
+
+	<!--list of contacts to display-->
+	<!-- Edit and delete buttons -->
+	<!-- Edit and delete buttons
+	<button type="button" id="editButton" class="editButton" onclick="editContact();"> </button>
+	<button type="button" id="areYouSure" class="deleteButton" onclick="areYouSure();"> </button>
+
+	Yes, delete
+	No, don't delete
+
+	<button type="button" id="yesDelete" class=
+	-->
+</div>
+
+
+<div id="addPopUp">
+	<!-- 4 input fields-->
+	<br /><p id ="NewContact"> New Contact </p>
+	<input type="text" id="addFirstName" placeholder="First Name"/>
+	<input type="text" id="addLastName" placeholder="Last Name"/>
+	<input type="text" id="addEmail" placeholder="example@email.com"/>
+	<input type="text" id="addPhone" placeholder="###-###-####"/>
+	
+	<!--button to add contact!-->
+	<button type="button" id="addContactButton" class="addContactButton" onclick="createContact();"> Add Contact </button> </br >
+	<!--
+<button type="button" id="addButton" class="addButton" onclick="addContact();></button></br >
+-->
+	<span id="contactAdded"></span>
+</div>
+</body>
+</html>

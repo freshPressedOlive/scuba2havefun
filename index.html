@@ -1,0 +1,34 @@
+<html>
+<link rel="shortcut icon" href="#" />
+<head>
+	<title>Contact Manager</title>
+	<script type="text/javascript" src="js/md5.js"></script>
+	<script type="text/javascript" src="js/code.js"></script>
+    <link href="css/styles.css" rel="stylesheet">	
+    <link href="https://fonts.googleapis.com/css?family=Ubuntu" rel="stylesheet">
+</head>
+<body>
+
+	<h1 id="title">The Inner Depths of Leinecker's Mind<br>(Contact Manager)</h1>
+<button type="button" id="loginSelect" class="buttons" onclick="switchToLogin();">Login</button>
+<button type="button" id="registerSelect" class="buttons" onclick="switchToRegister();">Register</button>
+<p>     </p>
+<div id="loginDiv">
+	<input type="text" id="loginName" placeholder="Username" /><br />
+	<input type="password" id="loginPassword" placeholder="Password"/><br />
+	<button type="button" id="loginButton" class="buttons" onclick="doLogin();">Login</button>
+	<span id="loginResult"></span>
+</div>
+
+<div id="registerDiv">
+	<input type="text" id="firstName" placeholder="First Name" /><br />
+	<input type="text" id="lastName" placeholder="Last Name" /><br />
+	<input type="text" id="registerName" placeholder="New Username" /><br />
+	<input type="password" id="registerPassword" placeholder="New Password"/><br />
+	<button type="button" id="createAccount" class="buttons" onclick="doRegister();">Create Account </button> <br />
+	<span id="registerResult"></span>
+	
+</div>
+
+</body>
+</html>
