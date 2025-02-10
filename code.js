@@ -1,43 +1,35 @@
 const urlBase = 'http://scuba2havefun.fun';
 const extension = 'php';
 
-/*
-const cors=require('cors');
-app.use(cors());
-*/
-
 let userId = 0;
 let firstName = "";
 let lastName = "";
+const rowNo=[]
 
 function doLogin()
 {
 	userId = 0;
 	firstName = "";
 	lastName = "";	
-	console.log("heyyyyyyy");
 	
 	let login = document.getElementById("loginName").value;
 	let password = document.getElementById("loginPassword").value;
-//	var hash = md5( password );
+	var hash = md5( password );
 	//i uncommented above statemented
 	document.getElementById("loginResult").innerHTML = "";
-//	console.log("hash: "+hash);
+	console.log("hash: "+hash);
 //	console.log("password: "+password);
-	let tmp = {login:login,password:password};
-
+//	let tmp = {login:login,password:password};
+	let tmp={login:login,password:hash};
 	//uncommented above
 	let jsonPayload = JSON.stringify( tmp );
 	
 	let url = urlBase +'/LAMPAPI'+ '/Login.' + extension;
-//temporarily adding +'/LAMPAPI' to above statement
-	console.log("jidewoska");
 	let xhr = new XMLHttpRequest();
 	xhr.open("POST", url, true);
 	xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
 	try
 	{
-		console.log("1233244323142");
 		xhr.onreadystatechange = function() 
 		{
 			console.log(this.readyState + ", "+this.status);
@@ -60,14 +52,11 @@ function doLogin()
 	
 				window.location.href = "contact.html";
 			}
-			console.log("state or smth is not ready");
 		};
 		xhr.send(jsonPayload);
-		console.log("try3reqwds");
 	}
 	catch(err)
 	{
-		console.log("hisdajn");
 		document.getElementById("loginResult").innerHTML = err.message;
 	}
 
@@ -88,23 +77,21 @@ function doRegister(){
 	}*/
 
 	//document.getElementById("signupResult").innerHTML = "invalid signup";	
-	var hash = md5(registerPassword)
-	
-	console.log("registerrrrr");
-	console.log(firstName);
+	//var hash = md5(registerPassword)
+	var hash = md5(password);	
+	console.log("hash "+hash);
 	document.getElementById("registerResult").innerHTML = "";
 
 	let tmp = {
         	firstName: firstName,
         	lastName: lastName,
         	login: username,
-        	password: hash //change to hash later
+        	password:hash //change to hash later
     	};
 
     	let jsonPayload = JSON.stringify(tmp);
 
     	let url = urlBase + '/LAMPAPI/Register.' + extension;
-	console.log("woo");
 	let xhr = new XMLHttpRequest();
         xhr.open("POST", url, true);
         xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
@@ -130,7 +117,6 @@ function doRegister(){
                 lastName = jsonObject.lastName;
                 saveCookie();
             }
-	    console.log("edjisji2ej1wqksm");
         };
 
         xhr.send(jsonPayload);
@@ -203,8 +189,6 @@ function createContact()
 	//Check that the info they gave is valid !!!!
 
 	console.log(firstName +lastName+email+phone+"----");
-	//let newContact = document.getElementById("contactText").value;
-	//document.getElementById("contactCreateResult").innerHTML = "";
 
 	let tmp = {
 		firstName: firstName,
@@ -215,9 +199,7 @@ function createContact()
 		};
 	console.log(tmp.firstName);	
 	let jsonPayload = JSON.stringify( tmp );
-	console.log("mmm");
 	let url = urlBase + '/LAMPAPI/CreateContact.' + extension;
-	console.log("aaaaa");
 	let xhr = new XMLHttpRequest();
 	xhr.open("POST", url, true);
 	xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
@@ -228,7 +210,7 @@ function createContact()
 		{
 			if (this.readyState == 4 && this.status == 200) 
 			{
-				//document.getElementById("contactCreateResult").innerHTML = "Contact has been added";
+				document.getElementById("contactSearchResult").value = "Contact added.";
 				console.log("CONTACT ADDED!!!!");
 			}
 		};
@@ -236,19 +218,29 @@ function createContact()
 	}
 	catch(err)
 	{
-		//document.getElementById("contactCreateResult").innerHTML = err.message;
 		console.log("contact not added :(");
+		document.getElementById("contactSearchResult").value = "Contact not added";
 	}
-	
+
+	document.getElementById("addFirstName").value = "";
+	document.getElementById("addLastName").value = "";
+	document.getElementById("addEmail").value = "";
+	document.getElementById("addPhone").value = "";
+
+
+	addPopUp.style.display='none';
+	contactList.style.display='block';
+
 }
 
 function searchContacts()
 {
+	addPopUp.style.display = 'none';
+	contactList.style.display = 'block';
+
 	let srch = document.getElementById("searchText").value;
 	document.getElementById("contactSearchResult").innerHTML = "";
 	
-	let contactList = "";
-
 	let tmp = {search:srch,userId:userId};
 	let jsonPayload = JSON.stringify( tmp );
 
@@ -263,154 +255,234 @@ function searchContacts()
 		{
 			if (this.readyState == 4 && this.status == 200) 
 			{
-				document.getElementById("contactSearchResult").innerHTML = "Contact(s) have been retrieved";
+				document.getElementById("contactSearchResult").innerHTML = "Results for '"+srch+"': ";
 				let jsonObject = JSON.parse( xhr.responseText );
+				const table=document.getElementById("contactTable");
 				
+				const tbody = document.getElementById('tableList'); // Or use a specific ID/class selector
+    				tbody.innerHTML = '';
+
 				for( let i=0; i<jsonObject.results.length; i++ )
 				{
-					contactList += jsonObject.results[i].FirstName+", ";
-                                        contactList += jsonObject.results[i].LastName+", ";
-                                        contactList += jsonObject.results[i].Phone+", ";
-                                        contactList += jsonObject.results[i].Email+", ";
+					rowNo[i] = jsonObject.results[i].ID
+					const newRow = tbody.insertRow();
+					//newRow
+					const htmlString = newRow.outerHTML;
+					console.log("outerHTML: "+htmlString);
+					newRow.id='row'+i;
+                                        const cell0= newRow.insertCell(0);
+                                        const cell1= newRow.insertCell(1);
+                                        const cell2= newRow.insertCell(2);
+                                        const cell3= newRow.insertCell(3);
+                                        const cell4= newRow.insertCell(4);
+                                        const cell5= newRow.insertCell(5);
+
+					/*
+                                        cell0.innerHTML=jsonObject.results[i].FirstName;
+                                        cell1.innerHTML=jsonObject.results[i].LastName;
+                                        cell2.innerHTML=jsonObject.results[i].Phone;
+                                        cell3.innerHTML=jsonObject.results[i].Email;*/
+
+					cell0.innerHTML="<p id='firstName" + i + "'>" + jsonObject.results[i].FirstName + "</p>";
+					cell1.innerHTML="<p id='lastName"+i+"'>"+jsonObject.results[i].LastName+"</p>";
+					cell2.innerHTML="<p id='phone"+i+"'>"+jsonObject.results[i].Phone+"</p>";
+					cell3.innerHTML="<p id='email"+i+"'>"+jsonObject.results[i].Email+"</p>";
+
+                                        var theEditButton=document.getElementById("editButton");
+                                        var theDeleteButton=document.getElementById("areYouSure");
+                                        cell4.innerHTML='<button type="button" id="editButton'+i+'" class="editButton" onclick="edit('+i+');"><span>&#8203;</span></button>'+'<button type="button" id="saveButton'+i+'" class="saveButton" onclick="saveEdit('+i+');"><span>&#8203;</span></button>';
+					cell5.innerHTML='<button type="button" id="areYouSure'+i+'" class="deleteButton" onclick="areYouSure('+i+');"><span>&#8203;</span></button>' + '<button type="button" id="confirmDeleteButton'+i+'" class="confirmDeleteButton" onclick="deleteContact('+i+');">Confirm<span>&#8203;</span></button>'+'<button type="button" id="cancelDeleteButton'+i+'" class="cancelDeleteButton" onclick="dontDelete('+i+');">Cancel<span>&#8203;</span></button>';
+					
+					var elements = document.getElementsByClassName('saveButton');
+
+					for (var j=0; j<elements.length;j++){
+						elements[j].style.display='none';
+					}
+					
+					var elements2 = document.getElementsByClassName('confirmDeleteButton');
+
+					for (var j=0; j<elements2.length;j++){
+						elements2[j].style.display='none';
+					}
+
+					var elements3 = document.getElementsByClassName('cancelDeleteButton');
+
+                                        for (var j=0; j<elements3.length;j++){
+                                                elements3[j].style.display='none';
+                                        }
+
+					
 					if( i < jsonObject.results.length - 1 )
 					{
-						contactList += "<br />\r\n";
+						//contactList += "<br />\r\n";
 					}
 				}
 				
-				document.getElementsByTagName("p")[0].innerHTML = contactList;
 			}
 		};
 		xhr.send(jsonPayload);
-		console.log("eeeeeeee");
 	}
 	catch(err)
 	{
-		console.log("efdefwds");	
 		document.getElementById("contactSearchResult").innerHTML = err.message;
 	}
 	
 }
 
-function refreshContacts(){
-	console.log("refreshing contacts....");
-	const table=document.getElementById("contactTable");
-	let tmp={
-		userId: userId,
-		search: ""
-	}
-	let contactList = "";
-	let jsonPayload = JSON.stringify( tmp );
-
-        let url = urlBase + '/LAMPAPI/SearchContacts.' + extension;
-        
-        let xhr = new XMLHttpRequest();
-        xhr.open("POST", url, true);
-        xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
+function refreshContacts() {
+	document.getElementById("searchText").value = ""; // I added this to clear the search bar
 	
-	try
-        {
-                xhr.onreadystatechange = function() 
-                {
-                        if (this.readyState == 4 && this.status == 200) 
-                        {
-                               // document.getElementById("contactSearchResult").innerHTML = "Contact(s) have been retri>
-                                let jsonObject = JSON.parse(xhr.responseText);
-                                
-                                for( let i=0; i<jsonObject.results.length; i++ )
-                                {
-                                        contactList += jsonObject.results[i].FirstName;
-					contactList += jsonObject.results[i].LastName;
-					contactList += jsonObject.results[i].Phone;
-					contactList += jsonObject.results[i].Email;
-                                        if( i < jsonObject.results.length - 1 )
-                                        {
-                                                contactList += "<br />\r\n";
-                                        }
-                                }
-                                
-                                //document.getElementsByTagName("p")[0].innerHTML = contactList;
-				console.log(contactList);
-                        }
-                };
-                xhr.send(jsonPayload);
-                console.log("ree23dee");
-        }
-        catch(err)
-        {
-                console.log("refdefwds");        
-                //document.getElementById("contactSearchResult").innerHTML = err.message;
-        }
+	document.getElementById("addFirstName").value = "";
+	document.getElementById("addLastName").value = "";
+	document.getElementById("addEmail").value = "";
+	document.getElementById("addPhone").value = "";
+
+	searchContacts();
+}
+
+function edit(no)
+{
+	console.log("editing contact... for id "+no);
+
+	document.getElementById("editButton" + no).style.display = 'none';
+        document.getElementById("saveButton" + no).style.display = 'block';
+	
+	var editFN = document.getElementById("firstName" + no);
+	var editLN = document.getElementById("lastName" + no);
+	var editPhone = document.getElementById("phone" + no);
+	var editEmail = document.getElementById("email" + no);
+	
+	var newFN=editFN.innerText;
+	var newLN=editLN.innerText;
+	var newPhone=editPhone.innerText;
+	var newEmail=editEmail.innerText;
 
 
-	/*
-	console.log("userID is: "+tmp.userId);
-	let jsonPayload= JSON.stringify(tmp);
-	console.log("payloooooooad");
-	let url=urlBase+'/LAMPAPI/SearchContacts.'+extension;
-	let xhr = new XMLHttpRequest();
-	xhr.open("POST", url, true);
-	xhr.setRequestHeader("Content-type","application/json; charset=UTF-8");
-	console.log("before try stuff");
-	//try stuff
-	try{
-		console.log("sigh");
-		xhr.onreadystatechange=function() {
-			console.log("gggggg");
-			if(this.readyState == 4 && this.status == 200){
-				let jsonObject = JSON.parse(xhr.responseText);
-				console.log("8888");
-				if (jsonObject.error){
-					console.log(jsonObject.error);
-					console.log("json error");
-					return;
-				}
-				console.log("no error :D");
+	editFN.innerHTML="<input type='text' id='newFNText" + no + "' value='" + newFN + "'>";
+	editLN.innerHTML="<input type='text' id='newLNText" + no + "' value='" + newLN + "'>";
+	editPhone.innerHTML="<input type='text' id='newPhoneText" + no + "' value='" + newPhone + "'>";
+	editEmail.innerHTML="<input type='text' id='newEmailText" + no + "' value='" + newEmail + "'>";
 
-			
-			}
-			console.log("not ready");
+}
 
+//basically updatecontact function
+function saveEdit(no)
+{
+	var saveFN= document.getElementById("newFNText" + no).value;
+	var saveLN = document.getElementById("newLNText" + no).value;
+	var savePhone= document.getElementById("newPhoneText" + no).value;
+	var saveEmail =document.getElementById("newEmailText" + no).value;
+	var saveID =  rowNo[no]
 
+	console.log("new name is "+saveFN+"; saveID is: "+saveID+"; userID is: "+userId);
+	
+	 document.getElementById("firstName" + no).innerHTML = saveFN;
+	 document.getElementById("lastName" + no).innerHTML = saveLN;
+  	 document.getElementById("phone" + no).innerHTML = savePhone;
+   	 document.getElementById("email" + no).innerHTML = saveEmail;
+
+	let tmp = {
+		id: saveID,
+		firstName: saveFN,
+		lastName: saveLN,
+		phone: savePhone,
+		email: saveEmail,
+		userId: userId
 	};
-	//end of xhr statment stuff
 
-	} catch(err){
-		console.log(err.message);
-		console.log("yikes");
-	}*/
-	console.log("after try and catch");
-}
 
-/*Clear search list*/
-function refresh()
-{
+    let jsonPayload = JSON.stringify(tmp);
 
-}
+	console.log(tmp.firstName);
+    let url = urlBase + '/LAMPAPI/UpdateContact.' + extension;
 
-/*Edit*/
-function edit()
-{
+    let xhr = new XMLHttpRequest();
+    xhr.open("POST", url, true);
+    xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
+    try {
+        xhr.onreadystatechange = function () {
+            if (this.readyState == 4 && this.status == 200) {
+                console.log("Contact has been updated");
+                //searchContacts();
+            }
+        };
+        xhr.send(jsonPayload);
+    } catch (err) {
+        console.log(err.message);
+    }
 
+	document.getElementById("saveButton" + no).style.display = 'none';
+        document.getElementById("editButton" + no).style.display = 'block';
 }
 
 /*Delete icon is clicked, awaiting confirmation*/
-function areYouSure()
+function areYouSure(no)
 {
+	//deletePopUp.style.display='inline-block';
+        //contactList.style.display='none';
+	//remove if theres no time
+	console.log("are you sure for #"+no);
+	document.getElementById("areYouSure" + no).style.display = 'none';
+	document.getElementById("confirmDeleteButton" + no).style.display = 'block';
+	document.getElementById("cancelDeleteButton" + no).style.display = 'block';
 
+	var delFN = document.getElementById("firstName" + no).innerText;
+	var delLN = document.getElementById("lastName" + no).innerText;
+
+	//command to delete row
 }
 
-/*Once yes is clicked*/
-function deleteContact()
+/*Once confirm is clicked*/
+function deleteContact(no)
 {
 	//run deletecontact function
-	//switch samepopup to only say "Contact Deleted!"
+	//switch samepopup to only say "Contact Deleted!"; maybe make separate div for it? or make elements on original deletepopup hidden
+
+	//var delfirstName
+	//var delLastName;
+	document.getElementById("row" + no + "").outerHTML = "";
+	
+	var delId=rowNo[no]
+
+	let tmp= {
+		id: delId,
+		userId: userId
+	}
+
+	let jsonPayload = JSON.stringify(tmp);
+
+	let url = urlBase + '/LAMPAPI/DeleteContact.'+extension;
+
+	let xhr = new XMLHttpRequest();
+	xhr.open("POST", url, true);
+	xhr.setRequestHeader("Content-type","application/json; charset=UTF-8");
+
+	try{
+		xhr.onreadystatechange=function() {
+			if(this.readyState == 4 && this.status == 200){
+				console.log("Contact has been deleted");
+				refreshContacts();
+			}
+		};
+		xhr.send(jsonPayload);
+	} catch(err){
+		console.log(err.message);
+	}
+	console.log("after try catch");
+
+	//document.getElementById("confirmDeleteButton" + no).style.display = 'none';
+        //document.getElementById("areYouSure" + no).style.display = 'block';
 }
 
 /*Either no or the x is clicked; popup display is set to none and the normal contacts page is restored*/
-function dontDelete()
+function dontDelete(no)
 {
-	//[deletepopup].style.display='none';
+	//deletePopUp.style.display='none';
+	//make contactlist appear
+	contactList.style.display='block';
+	document.getElementById("areYouSure" + no).style.display = 'block';
+        document.getElementById("confirmDeleteButton" + no).style.display = 'none';
+        document.getElementById("cancelDeleteButton" + no).style.display = 'none';	
 	
 }
 
@@ -456,10 +528,14 @@ function switchToRegister(){
 
 /*toggle between addContact screen and contact list*/
 function switchToAddContact(){
-	console.log("jnreifodkmnjfekwmdlc");
+
+	document.getElementById("addFirstName").value = "";
+	document.getElementById("addLastName").value = "";
+	document.getElementById("addEmail").value = "";
+	document.getElementById("addPhone").value = "";
+
 	const el=document.getElementById("addPopUp");
 	const el2=document.getElementById("contactList");
-	console.log("asaassa");        
 	if (window.getComputedStyle(el).display==="none"){
 		console.log("clickity");
 		contactList.style.display='none';
@@ -469,5 +545,13 @@ function switchToAddContact(){
 		console.log ("clackity");
 		addPopUp.style.display='none';
         	contactList.style.display='block';
+	}
+}
+
+function easterEgg() {
+	if(bgDisplay.style.display == 'none') {
+		bgDisplay.style.display = 'block';
+	} else {
+		bgDisplay.style.display = 'none';
 	}
 }
